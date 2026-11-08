@@ -150,6 +150,6 @@ idf.py -p COM4 monitor
 
 ## 许可证
 
-[MIT](LICENSE)。
+[MIT](LICENSE)
 
 本项目链接的 ESP-IDF 与 esp-matter 使用 Apache-2.0，与 MIT 兼容。
