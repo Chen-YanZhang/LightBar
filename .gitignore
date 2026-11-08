@@ -1,0 +1,23 @@
+# ESP-IDF 构建产物
+build/
+firmware/build/
+managed_components/
+firmware/managed_components/
+sdkconfig
+sdkconfig.old
+.devdeps/
+
+# 固件与调试符号
+*.bin
+*.elf
+*.map
+
+# 编译日志
+*_build_log.txt
+
+# 系统 / 编辑器
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp

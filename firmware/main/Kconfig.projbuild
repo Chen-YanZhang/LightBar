@@ -1,0 +1,108 @@
+menu "Lightbar"
+
+    config LB_REV_NEW
+        bool "New PCB revision (EN/INT/PG wired to MCU)"
+        default n
+        help
+            Old PCB3_3 hardwires TPS92390 EN to VDD33, and INT/PG/PD_PG are not
+            connected, so the MCU cannot energize or kill the boost stages and
+            cannot receive fault interrupts. Enable only on the new revision so
+            the code that drives those pins is compiled in. On the new board
+            VSENSE_P/N sit across the real sense resistor, so VINOCP becomes a
+            critical (gate-closing) fault again.
+
+    config LB_BOOT_SELFTEST
+        bool "Run the TPS92390 register selftest at every boot"
+        default n
+        help
+            The selftest rewrites LED_CURR_CONFIG / USER_CONFIG1 / DISPLAY_BRT
+            on both drivers. It forces brightness to 0 first and never exceeds
+            LB_CODE_MAX, but it still costs ~1 s and is bench diagnostics, not
+            production behaviour. Off by default; CLI "m1" runs it on demand.
+
+    config LB_WS2812_ENABLE
+        bool "WS2812C status LED fitted"
+        default n
+        help
+            Status LED on LB_WS2812_GPIO. PCB3_3 carries ONE addressable RGB LED
+            (LED2: VDD33 / GND / DIN=IO15, DOUT open).
+
+    config LB_WS2812_GPIO
+        int "Status LED data GPIO"
+        default 15
+        depends on LB_WS2812_ENABLE
+
+    config LB_WS2812_COUNT
+        int "Status LED count"
+        default 1
+        depends on LB_WS2812_ENABLE
+        help
+            PCB3_3 has a single RGB LED. A strip can be attached on the new
+            board; set the real pixel count then.
+
+    config LB_WS2812_MAX_BRIGHTNESS
+        int "Status LED maximum brightness (0-255)"
+        default 96
+        depends on LB_WS2812_ENABLE
+        help
+            Keeps the LED from adding heat/noise next to the analog side.
+
+    config LB_SUN_LAT
+        int "Installation latitude, degrees (+N/-S), x10"
+        default 470
+        help
+            Stored x10 to keep Kconfig an integer: 470 = 47.0 deg N. Used by the
+            sun-adaptive CCT curve.
+
+    config LB_SUN_LON
+        int "Installation longitude, degrees (+E/-W), x10"
+        default 80
+        help
+            Stored x10: 80 = 8.0 deg E. Used for the solar-time correction.
+
+    config LB_SUN_AUTO
+        bool "Sun-adaptive CCT follows the sun automatically"
+        default n
+        help
+            When on, the mireds target tracks sun elevation. Off by default so a
+            Matter controller keeps full authority over colour temperature. A
+            controller writing ColorTemperatureMireds switches it off again.
+
+    config LB_TZ
+        string "POSIX TZ string (local time display only)"
+        default "CET-1CEST,M3.5.0/2,M10.5.0/3"
+        help
+            Used only for printing local time. The sun curve works from UTC plus
+            longitude, so a wrong TZ never moves the light.
+
+    config LB_OT_TRIP_C
+        int "Board over-temperature trip (degC)"
+        default 80
+        range 40 110
+        help
+            The SHT40 is placed next to the two TPS92390 on purpose: it measures
+            BOARD temperature. When it reaches this value the firmware forces
+            both driver outputs off (DISPLAY_BRT=0) and keeps the safety gate
+            closed until the board has cooled below the clear threshold for
+            several consecutive samples.
+            Measured reference on PCB3_3: with 5 V applied and the boost idling
+            at 35.5 V (no LED load) the board sits around 59 degC, so the trip
+            point has to be comfortably above that.
+
+    config LB_OT_CLEAR_C
+        int "Board over-temperature clear (degC)"
+        default 68
+        range 30 100
+        help
+            Recovery threshold. Must be below LB_OT_TRIP_C to give hysteresis,
+            otherwise a lamp sitting at the limit would switch on and off.
+
+    config LB_STRINGS_PER_CHIP
+        int "LED strings connected per driver (1-4)"
+        default 3
+        range 1 4
+        help
+            Must match the LED_SET resistor / wiring. Fault bits of unused outputs
+            are ignored; the web page shows this many strings per channel.
+
+endmenu

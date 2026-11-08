@@ -1,0 +1,18 @@
+# Lightbar partition table (4 MB flash, custom CSV, default offset 0x8000)
+#
+# Budget: 0x400000 total. App slots must be 64 KB aligned, so the data head
+# stays 0x20000 and the two OTA slots take everything else: 0x20000 + 2*0x1E0000
+# = 0x400000 exactly. App slots therefore CANNOT grow on 4 MB flash; keep the
+# image small (CONFIG_COMPILER_OPTIMIZATION_SIZE) instead.
+# NVS was widened 0x6000 -> 0x10000 (Matter fabric/credentials + our flight
+# recorder share it); fctry shrank 0x4000 -> 0x3000 so the data head still
+# ends exactly at 0x20000 (0x9000+0x10000+0x1000+0x2000+0x1000+0x3000).
+#
+# Name,     Type, SubType,  Offset,   Size,     Flags
+nvs,        data, nvs,      ,         0x10000,
+nvs_keys,   data, nvs_keys, ,         0x1000,
+otadata,    data, ota,      ,         0x2000,
+phy_init,   data, phy,      ,         0x1000,
+fctry,      data, nvs,      ,         0x3000,
+ota_0,      app,  ota_0,    0x20000,  0x1E0000,
+ota_1,      app,  ota_1,    ,         0x1E0000,

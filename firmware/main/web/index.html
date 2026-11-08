@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><title>Lightbar · 设备管理</title><link rel="stylesheet" href="/style.css"><script src="/app.js" defer></script></head>
+<body>
+<main>
+<header><div class="brand"><span class="mark" aria-hidden="true">L</span><div><strong>Lightbar</strong><span>设备管理</span></div></div><span class="secure" id="net-badge">正在连接</span></header>
+
+<section class="hero"><span class="eyebrow">LightBar with SunLike LED 2700K / 5000K</span><h1 id="hero-title">运行概览</h1><p id="hero-sub">当前设备状态</p></section>
+
+<nav class="tabs" role="tablist">
+<button class="tab active" data-tab="overview" role="tab">概览</button>
+<button class="tab" data-tab="update" role="tab">更新</button>
+<button class="tab" data-tab="wifi" role="tab">配网</button>
+<button class="tab" data-tab="help" role="tab">说明</button>
+<button class="tab" data-tab="advanced" role="tab">高级</button>
+</nav>
+
+<!-- ============ 概览 ============ -->
+<section class="tab-page" id="page-overview">
+<section class="card device"><div class="device-icon" aria-hidden="true"><div><i></i><b></b><em></em></div></div><div class="device-info"><h2>Lightbar</h2><p>ESP32-C6 · Matter over Wi-Fi</p><span class="status-dot" id="dot"></span><span id="mode">正在连接</span></div><div class="version"><span>当前版本</span><strong id="version">—</strong></div></section>
+
+<section class="card"><div class="section-head"><h2>灯光</h2><span id="light-state" class="small-status">—</span></div>
+<p class="warn-box" id="boot-warn" hidden></p>
+<p class="warn-box" id="driver-warn" hidden></p>
+<div class="warn-box" id="string-warn" hidden><span id="string-warn-text"></span> <button id="reprobe" class="secondary small">重新检测灯串</button><span id="reprobe-note" class="small-status"></span></div>
+<p class="warn-box" id="cap-warn" hidden></p>
+<div class="row row-on"><span class="row-label">开关</span><label class="switch"><input id="on-sw" type="checkbox"><span class="knob"></span></label><span class="row-val" id="on-note"></span></div>
+<div class="row row-auto"><span class="row-label">自适应</span><label class="switch"><input id="auto-sw" type="checkbox"><span class="knob"></span></label><span class="row-note" id="auto-hint">跟随太阳高度自动调整色温。手动拖动下面的色温条会退出自适应。</span></div>
+<div class="row"><span class="row-label">亮度</span><input id="level" type="range" min="1" max="254" value="200"><span class="row-val" id="level-val">79%</span></div>
+<div class="row"><span class="row-label">色温</span><input id="mireds" type="range" min="200" max="370" value="370"><span class="row-val" id="mireds-val">2700K</span></div>
+<p id="light-note" class="detail"></p></section>
+
+<section class="card"><div class="section-head"><h2>环境与驱动</h2><span class="small-status" id="temp-state">—</span></div><dl class="kv">
+<div><dt>板载温度</dt><dd id="temp">—</dd></div>
+<div><dt>驱动状态</dt><dd id="chips">—</dd></div>
+<div><dt>输出 2700K</dt><dd id="str-warm" class="strings">—</dd></div>
+<div><dt>输出 5000K</dt><dd id="str-cold" class="strings">—</dd></div>
+<div><dt>输出门禁</dt><dd id="gate">—</dd></div>
+<div><dt>Matter</dt><dd id="commissioned">—</dd></div>
+</dl></section>
+</section>
+
+<!-- ============ 更新 ============ -->
+<section class="tab-page" id="page-update" hidden>
+<section class="card update-card">
+<div class="section-head"><h2>安装新固件</h2><span id="device-note" class="small-status">正在核对状态</span></div>
+<label class="file-zone" for="file"><svg viewBox="0 0 48 48" width="40" height="40" aria-hidden="true"><path d="M24 31V10m-7 7 7-7 7 7M11 29v9h26v-9" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg><strong>选择 firmware.bin</strong><span id="file-label">从项目 Releases 页面下载对应的 .bin</span><input id="file" type="file" accept=".bin"></label>
+<div class="notice"><svg width="18" height="18" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="8" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M10 5.5v5m0 2.5v1" stroke="currentColor" stroke-width="1.5"/></svg><p>更新期间请保持供电。上传完成后设备会自行校验并重启；若新固件无法正常启动，引导程序会自动回滚。</p></div>
+<div class="actions"><button id="upload" disabled>上传并重启</button><button id="cancel" class="secondary" disabled>取消</button></div>
+</section>
+<section class="card progress-card"><div class="section-head"><h2>更新进度</h2><span id="percent">—</span></div><p id="status" role="status">等待操作。</p><progress id="progress" max="100" value="0"></progress><div class="steps"><span id="step-upload">上传</span><span id="step-verify">校验</span><span id="step-write">写入</span><span id="step-reboot">重启</span></div><p id="details" class="detail">选择固件文件后上传。</p></section>
+</section>
+
+<!-- ============ 配网 ============ -->
+<section class="tab-page" id="page-wifi" hidden>
+<section class="card"><div class="section-head"><h2>当前网络</h2><span class="small-status" id="ap-state">—</span></div><div class="ap-box"><strong id="ap-ssid">—</strong><span id="ap-hint">—</span></div>
+<p class="detail" id="prov-text">正在读取设备状态…</p><progress id="prov-bar" max="100" value="0"></progress></section>
+
+<section class="card"><div class="section-head"><h2>选择网络</h2><span class="small-status" id="scan-state">正在扫描</span></div>
+<div class="nets" id="nets"><div class="net-placeholder">正在扫描附近网络…</div></div>
+<label class="hash-label" for="pass">密码 <span>开放网络可留空</span></label>
+<input id="pass" type="password" autocomplete="off" placeholder="Wi-Fi 密码">
+<div class="actions"><button id="join" disabled>连接</button><button id="rescan" class="secondary">重新扫描</button></div>
+<label class="hash-label" for="ssid-manual">或手动输入网络名 <span>扫描不可用时用这个</span></label>
+<input id="ssid-manual" type="text" autocomplete="off" placeholder="你的 Wi-Fi 名称（区分大小写）">
+<div class="actions"><button id="join-manual" class="secondary">使用这个网络并连接</button></div>
+<p id="join-note" class="detail"></p></section>
+
+<section class="card"><div class="section-head"><h2>添加到 Home Assistant</h2><span class="small-status">Matter</span></div>
+<p class="detail" style="margin-top:0">在 Home Assistant App 里选「添加设备 → 没有二维码」，输入配对码：</p>
+<div class="code-row"><strong id="manual-code" class="code">—</strong></div>
+<p class="detail" id="code-note"></p></section>
+
+<section class="card danger-card"><div class="section-head"><h2>恢复出厂设置</h2><span class="small-status">不可撤销</span></div>
+<p class="detail" style="margin-top:0">清除所有 Matter 配对(fabric / 凭证)和已保存的 Wi-Fi,亮度上限与驱动参数恢复默认,然后重启。重启后设备会重新打开 <strong>Lightbar-xxxx</strong> 热点,需要重新配网并重新添加到 Home Assistant。故障历史记录会保留。</p>
+<div class="actions"><button id="factory" class="danger">恢复出厂设置</button></div>
+<p id="factory-note" class="detail"></p></section>
+</section>
+
+<!-- ============ 说明 ============ -->
+<section class="tab-page" id="page-help" hidden>
+<section class="card"><div class="section-head"><h2>状态灯颜色</h2><span class="small-status">板上 RGB 指示灯</span></div>
+<p class="detail" style="margin-top:0">指示灯每秒刷新一次,反映安全状态机的当前状态。闪烁的颜色优先级高于常亮。</p>
+<ul class="legend">
+<li><span class="sw" style="background:#f5f5f0;border:1px solid #d0d0d5"></span><div><strong>白色 常亮</strong><span>正常运行:输出门禁打开,灯光按设定输出。</span></div></li>
+<li><span class="sw blink" style="background:#f5f5f0;border:1px solid #d0d0d5"></span><div><strong>白色 闪烁</strong><span>正在运行,但至少一串 LED 被驱动判定开路/短路并关闭,或一颗驱动卡在故障恢复循环(该路不亮)。概览页会标出是哪一串。重新接好后需要断电重启(本板)或点「重新检测灯串」(新板)。</span></div></li>
+<li><span class="sw blink" style="background:#3b82f6"></span><div><strong>蓝色 闪烁</strong><span>Matter 配对窗口打开(可以在 Home Assistant 里添加设备)。优先级最高,会覆盖其它颜色。</span></div></li>
+<li><span class="sw" style="background:#2dd4bf;opacity:.55"></span><div><strong>暗青色 常亮</strong><span>启动中,或输出已停止但驱动芯片在线(例如刚上电、门禁尚未打开)。</span></div></li>
+<li><span class="sw" style="background:#f59e0b"></span><div><strong>琥珀色 常亮</strong><span>上电时驱动报告 CRCERR(出厂配置加载失败),门禁锁定。只有彻底断电再上电才能清除。</span></div></li>
+<li><span class="sw blink" style="background:#ef4444"></span><div><strong>红色 闪烁</strong><span>驱动正在报告严重故障(输入过压/欠压、boost 过流/过压、电荷泵、配置电阻缺失、热关断等),输出已被切断。故障消失后 1 秒内自动恢复。</span></div></li>
+<li><span class="sw blink" style="background:#a855f7"></span><div><strong>紫色 闪烁</strong><span>板温超过保护阈值(默认 80 °C),两颗驱动输出被强制关闭;降到 68 °C 以下并持续 3 秒后自动恢复。</span></div></li>
+<li><span class="sw" style="background:#ec4899"></span><div><strong>洋红色 常亮</strong><span>两颗 TPS92390 都没有应答 I2C:驱动未供电、总线故障或硬件损坏。</span></div></li>
+</ul></section>
+<section class="card"><div class="section-head"><h2>状态灯亮度</h2><span class="small-status" id="led-bri-val">—</span></div>
+<div class="row"><span class="row-label">亮度</span><input id="led-bri" type="range" min="0" max="255" value="96"></div>
+<p class="detail" id="led-note">拖动后立即生效并保存。0 = 状态灯完全关闭(故障指示也不再显示)。</p></section>
+</section>
+
+<!-- ============ 高级 / 调试 ============ -->
+<section class="tab-page" id="page-advanced" hidden>
+<section class="card"><div class="section-head"><h2>运行参数</h2><button id="diag-refresh" class="secondary small">刷新</button></div><dl class="kv" id="diag-kv"><div><dt>—</dt><dd>读取中</dd></div></dl></section>
+<section class="card"><div class="section-head"><h2>诊断模式:独立驱动两路</h2><label class="switch"><input id="dd-on" type="checkbox"><span class="knob"></span></label></div>
+<p class="detail" style="margin-top:0">开启后绕过色温混光,两颗 TPS92390 的输出各自独立设定,可以同时 100%(热成像、效率、噪声对比用)。关闭后恢复到概览页设定的开关/亮度/色温;此模式不保存,重启自动退出。仍受安全门禁(超温、严重故障)约束。</p>
+<div class="row dd-row"><span class="row-label">2700K(U12)</span><input id="dd-warm" type="range" min="0" max="100" value="0" disabled><span class="row-val" id="dd-warm-val">0%</span></div>
+<div class="row dd-row"><span class="row-label">5000K(U4)</span><input id="dd-cold" type="range" min="0" max="100" value="0" disabled><span class="row-val" id="dd-cold-val">0%</span></div>
+<div class="actions"><button id="dd-both100" class="secondary small" disabled>两路 100%</button><button id="dd-off" class="secondary small" disabled>两路 0%</button><span class="small-status" id="dd-note"></span></div></section><section class="card"><div class="section-head"><h2>LED 电流上限</h2><span class="small-status" id="cur-state">—</span></div>
+<p class="detail" style="margin-top:0">每串 LED 的最大电流(100% 亮度时的输出)。150 mA 是灯串额定值,固件硬上限;130 mA 是早期台架用的保守值。修改后立即生效并保存。</p>
+<div class="row"><span class="row-label">上限</span><select id="cur-sel"><option value="240">150 mA(额定 / 全功率)</option><option value="208">130 mA(台架保守值)</option><option value="160">100 mA</option><option value="128">80 mA</option><option value="80">50 mA</option></select><span class="row-val" id="cur-val">—</span></div></section>
+<section class="card"><div class="section-head"><h2>驱动参数</h2><span class="small-status" id="tune-state">—</span></div>
+<p class="detail" style="margin-top:0">写入两颗 TPS92390 的 USER_CONFIG1,立即生效并保存。不适用于当前硬件的项会置灰。</p>
+<h3 class="sub">调光过渡</h3>
+<div class="row"><span class="row-label">过渡时间</span><select id="tune-slope"><option value="0">关闭(阶跃)</option><option value="1">1 ms</option><option value="2">2 ms</option><option value="3">50 ms</option><option value="4">100 ms</option><option value="5">200 ms(默认)</option><option value="6">300 ms</option><option value="7">500 ms</option></select></div>
+<p class="hint">亮度/色温变化时的斜坡时间。越长越柔和,也越能压低 boost 的电流尖峰;与开关频率无关。</p>
+<div class="row"><span class="row-label">PWM 抖动</span><select id="tune-dither"><option value="0">关闭(默认)</option><option value="1">1 bit</option><option value="2">2 bit</option><option value="3">3 bit</option><option value="4">4 bit</option></select></div>
+<p class="hint">仅影响 Hybrid 模式 12.5% 以下的 PWM 段分辩率,一般无需开启。</p>
+<h3 class="sub">Boost 扩频 <span class="small-status" id="ss-cap-note"></span></h3>
+<div class="row"><span class="row-label">范围</span><select id="tune-ssr"><option value="0">±3.3%</option><option value="1">±4.3%</option><option value="2">±5.3%(默认)</option><option value="3">±7.2%</option></select></div>
+<div class="row"><span class="row-label">调制频率</span><select id="tune-ssm"><option value="0">200 Hz(默认)</option><option value="1">500 Hz</option><option value="2">800 Hz</option><option value="3">1.2 kHz</option></select></div>
+<div class="row"><span class="row-label">伪随机</span><label class="switch"><input id="tune-ssp" type="checkbox"><span class="knob"></span></label><span class="row-val" id="tune-uc1">—</span></div>
+<p class="hint" id="ss-hint">芯片内置扩频,仅在 BST_SYNC 接高电平的板子(PCB3_3)上生效;BST_SYNC 由主控提供时钟的板子上由固件扩频接管,这里不可用。</p>
+<h3 class="sub">Boost 时钟 <span class="small-status" id="sync-cap-note"></span></h3>
+<div class="row"><span class="row-label">开关频率</span><select id="sync-freq" disabled><option value="0">由 BST_FSET 电阻决定</option></select></div>
+<p class="hint" id="sync-hint">主控通过 BST_SYNC 提供时钟的板子上可在 200–400 kHz 间选择;当前板由电阻固定,不可调。</p>
+<p class="detail" id="tune-note"></p></section>
+
+<section class="card"><div class="section-head"><h2>TPS92390 寄存器</h2><span class="small-status" id="diag-time">—</span></div>
+<div class="regwrap"><table class="regs" id="regs"><thead><tr><th>reg</th><th>warm 0x3A</th><th>cold 0x3B</th><th>含义</th></tr></thead><tbody></tbody></table></div></section>
+<section class="card"><div class="section-head"><h2>故障历史</h2><span class="small-status" id="hist-count">—</span></div><div class="regwrap"><table class="regs" id="hist"><thead><tr><th>#</th><th>原因</th><th>warm SUP/BST/LED</th><th>cold SUP/BST/LED</th></tr></thead><tbody></tbody></table></div></section>
+<section class="card"><div class="section-head"><h2>HTTP API</h2><span class="small-status" id="api-base">—</span></div>
+<p class="detail" style="margin-top:0">本页面没有任何后台服务,所有数据都来自设备自带的 HTTP 服务器(端口 80,无鉴权,仅限局域网)。页面读状态的方式:<strong>每 2 秒 GET /api/status</strong> 刷新概览;进入「高级」时再 GET /api/diag 与 /api/log;配网页每 2 秒 GET /api/prov。控件改动经 POST 发出,表单编码 <code>application/x-www-form-urlencoded</code>,响应均为 JSON。你可以用 curl / Home Assistant RESTful / 任何脚本直接调用。</p>
+<div class="regwrap"><table class="regs api"><thead><tr><th>方法</th><th>路径</th><th>参数</th><th>说明</th></tr></thead><tbody>
+<tr><td>GET</td><td>/api/status</td><td>—</td><td>运行状态(页面主数据源):version, state, gate, temp, light{on,level,mireds}, auto, fsm[2], driver, level_cap, current_code, chips_ack, ip, commissioned, led_brightness, uptime, strings{n, warm{fault,kind}, cold{fault,kind}}, reprobe, rev, hw{warm/cold: mode, strings, boost_khz, pwm_hz, invstring}(芯片 1Eh 自检), diag{on,warm,cold}, chips[{fsm,stuck,want}](stuck = 该路要亮却 ≥3 s 未进 NORMAL)</td></tr>
+<tr><td>GET</td><td>/api/diag</td><td>—</td><td>两颗 TPS92390 寄存器 00/02/0E/10/12/14/16/18/1A/1C/1E、堆、RSSI、boots、crit_events、tune、最近 8 条故障历史</td></tr>
+<tr><td>GET</td><td>/api/log</td><td>—</td><td>本次开机以来的事件环(64 条):wifi / matter / light / sm / ota / web / cli</td></tr>
+<tr><td>GET</td><td>/api/prov</td><td>—</td><td>配网状态、热点 SSID、IP、Matter 手动配对码与 QR 载荷</td></tr>
+<tr><td>GET</td><td>/api/scan</td><td>start=1 启动扫描</td><td>附近 Wi-Fi 列表(异步,轮询直到 scanning=0)</td></tr>
+<tr><td>POST</td><td>/api/light</td><td>on=0|1 level=1-254 mireds=200-370</td><td>设灯。任一参数可省略:缺 on 保持开关、缺 mireds 保持色温(自适应时页面就这样发)</td></tr>
+<tr><td>POST</td><td>/api/auto</td><td>on=0|1(省略 = 切换)</td><td>日光自适应色温开关</td></tr>
+<tr><td>POST</td><td>/api/diagdrive</td><td>on=0|1 warm=0-100 cold=0-100</td><td>诊断模式:绕过色温混光,按百分比独立驱动两颗芯片;易失,不持久化</td></tr>
+<tr><td>POST</td><td>/api/strings/reprobe</td><td>—</td><td>EN 断电重启驱动以重新启用已接好的灯串(新板);本板返回 ok=0 并提示断电</td></tr>
+<tr><td>POST</td><td>/api/cur</td><td>level=0x10-0xF0(8 位,电流码 = level×16)</td><td>每串 LED 电流上限,夹到额定 0xF0 = 150 mA,持久化</td></tr>
+<tr><td>POST</td><td>/api/cap</td><td>level=8-254</td><td>亮度上限,持久化</td></tr>
+<tr><td>POST</td><td>/api/tune</td><td>slope=0-7 dither=0-4 ss_range=0-3 ss_mod=0-3 ss_pseudo=0|1</td><td>驱动参数(任一子集):过渡时间/抖动/芯片扩频,即时写两颗芯片并持久化;ss_* 仅在 rev=PCB3_3(BST_SYNC 接高)上有效</td></tr>
+<tr><td>POST</td><td>/api/led</td><td>brightness=0-255</td><td>状态灯亮度,持久化</td></tr>
+<tr><td>POST</td><td>/api/prov</td><td>ssid= pass=</td><td>加入 Wi-Fi(经 Matter 网络驱动写入,异步)</td></tr>
+<tr><td>POST</td><td>/update</td><td>原始 .bin 字节流</td><td>OTA 写入备用分区并重启;新镜像自检失败自动回滚</td></tr>
+<tr><td>POST</td><td>/api/factory_reset</td><td>confirm=yes</td><td>清除 Matter fabric / Wi-Fi / 亮度上限 / 驱动参数 / 灯光记忆,重启进配网热点</td></tr>
+</tbody></table></div>
+<p class="detail">示例:<code>curl -s http://<span class="api-ip">设备IP</span>/api/status</code> <code>curl -X POST -d "on=1&amp;level=180&amp;mireds=300" http://<span class="api-ip">设备IP</span>/api/light</code></p></section><section class="card"><div class="section-head"><h2>事件日志</h2><button id="log-refresh" class="secondary small">刷新</button></div><p class="detail" style="margin-top:0">设备本次开机以来的事件(重启即清空):网络、Matter 会话、每条灯光命令的来源与结果、状态机跳转。</p><div class="regwrap"><table class="regs" id="evlog"><thead><tr><th>t</th><th>来源</th><th>事件</th></tr></thead><tbody></tbody></table></div></section>
+<details class="technic"><summary>原始 JSON</summary><p class="detail" id="diag-json">—</p></details>
+</section>
+
+<footer>Lightbar · ESP32-C6 · Matter over Wi-Fi<br>开源项目 · 固件未签名，仅建议在可信局域网使用</footer>
+</main>
+</body></html>
