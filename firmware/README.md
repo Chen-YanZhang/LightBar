@@ -1,12 +1,11 @@
 # Lightbar firmware
 
 CCT 环形灯固件(ESP32-C6 + 2×TPS92390 + Matter over Wi-Fi)。
-硬件需求见 `../docs/硬件改版需求清单_v1.md`;各里程碑实测报告在 `../docs/M*.md`。
 
 ## 构建
 
 ```powershell
-. .\..\idf_env.ps1          # 激活全局 ESP-IDF v6.1(EIM 安装:C:\esp\v6.1 + C:\Espressif\tools)
+. $env:IDF_PATH\export.ps1  # 先激活 ESP-IDF v6.1 环境
 idf.py set-target esp32c6   # 仅首次
 idf.py build                # 产物 build\lightbar.bin
 ```
