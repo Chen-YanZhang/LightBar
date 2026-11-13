@@ -88,7 +88,7 @@ idf.py build
 | 选项 | 默认 | 说明 |
 |---|---|---|
 | `CONFIG_LB_STRINGS_PER_CHIP` | 3 | 每颗驱动接的灯串数 |
-| `CONFIG_LB_REV_NEW` | n | 新板（PCB4）硬件特性开关 |
+| `CONFIG_LB_REV_NEW` | n | 新硬件版本的特性开关（当前板请保持 n） |
 | `CONFIG_LB_BOOT_SELFTEST` | n | 上电写寄存器自检 |
 
 `idf.py menuconfig` → `LightBar Configuration`。
