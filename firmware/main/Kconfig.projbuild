@@ -1,4 +1,4 @@
-menu "Lightbar"
+menu "LightBar"
 
     config LB_REV_NEW
         bool "New PCB revision (EN/INT/PG wired to MCU)"

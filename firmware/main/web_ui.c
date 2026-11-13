@@ -571,11 +571,12 @@ static esp_err_t h_prov_get(httpd_req_t *req)
     bool has_ip = wifi_prov_ip(ip, sizeof(ip));
     char manual[16] = {0}, qr[128] = {0};
     bool have_code = (lb_matter_setup_code(manual, sizeof(manual), qr, sizeof(qr)) == ESP_OK);
-    char buf[420];
+    char buf[460];
     int n = snprintf(buf, sizeof(buf),
-                     "{\"state\":\"%s\",\"ap_active\":%d,\"ap_ssid\":\"%s\",\"ip\":\"%s\","
+                     "{\"state\":\"%s\",\"ap_active\":%d,\"ap_ssid\":\"%s\",\"ap_pass\":\"%s\",\"ip\":\"%s\","
                      "\"has_ip\":%d,\"manual_code\":\"%s\",\"qr\":\"%s\",\"commissioned\":%d}",
-                     wifi_prov_state_name(), (int)wifi_prov_ap_active(), wifi_prov_ap_ssid(), ip,
+                     wifi_prov_state_name(), (int)wifi_prov_ap_active(), wifi_prov_ap_ssid(),
+                     wifi_prov_ap_pass(), ip,
                      (int)has_ip, have_code ? manual : "", have_code ? qr : "",
                      (int)lb_matter_commissioned());
     httpd_resp_set_type(req, "application/json");

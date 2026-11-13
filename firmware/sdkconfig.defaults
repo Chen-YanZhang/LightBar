@@ -1,4 +1,4 @@
-# Lightbar sdkconfig.defaults - target esp32c6, 4MB flash
+# LightBar sdkconfig.defaults - target esp32c6, 4MB flash
 # NOTE: keep this file pure ASCII (IDF 5.4 kconfgen reads it with system codepage).
 CONFIG_IDF_TARGET="esp32c6"
 

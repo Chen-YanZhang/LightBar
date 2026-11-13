@@ -1,4 +1,4 @@
-// Lightbar app_main: NVS flight recorder -> safe state -> (optional) selftest ->
+// LightBar app_main: NVS flight recorder -> safe state -> (optional) selftest ->
 // fault-monitor state machine + CLI -> Matter / web / provisioning.
 // Outputs stay DISARMED by policy until the safety gate opens (safety_sm.h).
 #include <stdio.h>
@@ -30,7 +30,7 @@
 
 void tps_selftest_run(void);
 
-static const char *TAG = "lightbar";
+static const char *TAG = "LightBar";
 
 void app_main(void)
 {
@@ -39,7 +39,7 @@ void app_main(void)
     esp_chip_info(&chip);
     esp_flash_get_size(NULL, &flash_size);
 
-    ESP_LOGI(TAG, "Lightbar %s boot", lb_ota_version());
+    ESP_LOGI(TAG, "LightBar %s boot", lb_ota_version());
     ESP_LOGI(TAG, "  target=esp32c6 model=%d rev=%d cores=%d",
              chip.model, chip.revision, chip.cores);
     ESP_LOGI(TAG, "  flash=%" PRIu32 "MB reset_reason=%d",

@@ -1,8 +1,8 @@
 <!doctype html>
-<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><title>Lightbar · 设备管理</title><link rel="stylesheet" href="/style.css"><script src="/app.js" defer></script></head>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><title>LightBar · 设备管理</title><link rel="stylesheet" href="/style.css"><script src="/app.js" defer></script></head>
 <body>
 <main>
-<header><div class="brand"><span class="mark" aria-hidden="true">L</span><div><strong>Lightbar</strong><span>设备管理</span></div></div><span class="secure" id="net-badge">正在连接</span></header>
+<header><div class="brand"><span class="mark" aria-hidden="true">L</span><div><strong>LightBar</strong><span>设备管理</span></div></div><span class="secure" id="net-badge">正在连接</span></header>
 
 <section class="hero"><span class="eyebrow">LightBar with SunLike LED 2700K / 5000K</span><h1 id="hero-title">运行概览</h1><p id="hero-sub">当前设备状态</p></section>
 
@@ -16,7 +16,7 @@
 
 <!-- ============ 概览 ============ -->
 <section class="tab-page" id="page-overview">
-<section class="card device"><div class="device-icon" aria-hidden="true"><div><i></i><b></b><em></em></div></div><div class="device-info"><h2>Lightbar</h2><p>ESP32-C6 · Matter over Wi-Fi</p><span class="status-dot" id="dot"></span><span id="mode">正在连接</span></div><div class="version"><span>当前版本</span><strong id="version">—</strong></div></section>
+<section class="card device"><div class="device-icon" aria-hidden="true"><div><i></i><b></b><em></em></div></div><div class="device-info"><h2>LightBar</h2><p>ESP32-C6 · Matter over Wi-Fi</p><span class="status-dot" id="dot"></span><span id="mode">正在连接</span></div><div class="version"><span>当前版本</span><strong id="version">—</strong></div></section>
 
 <section class="card"><div class="section-head"><h2>灯光</h2><span id="light-state" class="small-status">—</span></div>
 <p class="warn-box" id="boot-warn" hidden></p>
@@ -71,7 +71,7 @@
 <p class="detail" id="code-note"></p></section>
 
 <section class="card danger-card"><div class="section-head"><h2>恢复出厂设置</h2><span class="small-status">不可撤销</span></div>
-<p class="detail" style="margin-top:0">清除所有 Matter 配对(fabric / 凭证)和已保存的 Wi-Fi,亮度上限与驱动参数恢复默认,然后重启。重启后设备会重新打开 <strong>Lightbar-xxxx</strong> 热点,需要重新配网并重新添加到 Home Assistant。故障历史记录会保留。</p>
+<p class="detail" style="margin-top:0">清除所有 Matter 配对(fabric / 凭证)和已保存的 Wi-Fi,亮度上限与驱动参数恢复默认,然后重启。重启后设备会重新打开 <strong>LightBar-ES-xxxx</strong> 热点（密码 = 设备 MAC 的 12 位大写十六进制、无冒号，重启前可在本页或串口随时查看）,需要重新配网并重新添加到 Home Assistant。故障历史记录会保留。</p>
 <div class="actions"><button id="factory" class="danger">恢复出厂设置</button></div>
 <p id="factory-note" class="detail"></p></section>
 </section>
@@ -104,7 +104,7 @@
 <div class="row dd-row"><span class="row-label">5000K(U4)</span><input id="dd-cold" type="range" min="0" max="100" value="0" disabled><span class="row-val" id="dd-cold-val">0%</span></div>
 <div class="actions"><button id="dd-both100" class="secondary small" disabled>两路 100%</button><button id="dd-off" class="secondary small" disabled>两路 0%</button><span class="small-status" id="dd-note"></span></div></section><section class="card"><div class="section-head"><h2>LED 电流上限</h2><span class="small-status" id="cur-state">—</span></div>
 <p class="detail" style="margin-top:0">每串 LED 的最大电流(100% 亮度时的输出)。150 mA 是灯串额定值,固件硬上限;130 mA 是早期台架用的保守值。修改后立即生效并保存。</p>
-<div class="row"><span class="row-label">上限</span><select id="cur-sel"><option value="240">150 mA(额定 / 全功率)</option><option value="208">130 mA(台架保守值)</option><option value="160">100 mA</option><option value="128">80 mA</option><option value="80">50 mA</option></select><span class="row-val" id="cur-val">—</span></div></section>
+<div class="row"><span class="row-label">上限</span><select id="cur-sel"><option value="240">150 mA(额定)</option><option value="208">130 mA(保守值)</option><option value="160">100 mA</option><option value="128">80 mA</option><option value="80">50 mA</option></select></div></section>
 <section class="card"><div class="section-head"><h2>驱动参数</h2><span class="small-status" id="tune-state">—</span></div>
 <p class="detail" style="margin-top:0">写入两颗 TPS92390 的 USER_CONFIG1,立即生效并保存。不适用于当前硬件的项会置灰。</p>
 <h3 class="sub">调光过渡</h3>
@@ -131,7 +131,7 @@
 <tr><td>GET</td><td>/api/status</td><td>—</td><td>运行状态(页面主数据源):version, state, gate, temp, light{on,level,mireds}, auto, fsm[2], driver, level_cap, current_code, chips_ack, ip, commissioned, led_brightness, uptime, strings{n, warm{fault,kind}, cold{fault,kind}}, reprobe, rev, hw{warm/cold: mode, strings, boost_khz, pwm_hz, invstring}(芯片 1Eh 自检), diag{on,warm,cold}, chips[{fsm,stuck,want}](stuck = 该路要亮却 ≥3 s 未进 NORMAL)</td></tr>
 <tr><td>GET</td><td>/api/diag</td><td>—</td><td>两颗 TPS92390 寄存器 00/02/0E/10/12/14/16/18/1A/1C/1E、堆、RSSI、boots、crit_events、tune、最近 8 条故障历史</td></tr>
 <tr><td>GET</td><td>/api/log</td><td>—</td><td>本次开机以来的事件环(64 条):wifi / matter / light / sm / ota / web / cli</td></tr>
-<tr><td>GET</td><td>/api/prov</td><td>—</td><td>配网状态、热点 SSID、IP、Matter 手动配对码与 QR 载荷</td></tr>
+<tr><td>GET</td><td>/api/prov</td><td>—</td><td>配网状态、热点 SSID 与密码、IP、Matter 手动配对码与 QR 载荷</td></tr>
 <tr><td>GET</td><td>/api/scan</td><td>start=1 启动扫描</td><td>附近 Wi-Fi 列表(异步,轮询直到 scanning=0)</td></tr>
 <tr><td>POST</td><td>/api/light</td><td>on=0|1 level=1-254 mireds=200-370</td><td>设灯。任一参数可省略:缺 on 保持开关、缺 mireds 保持色温(自适应时页面就这样发)</td></tr>
 <tr><td>POST</td><td>/api/auto</td><td>on=0|1(省略 = 切换)</td><td>日光自适应色温开关</td></tr>
@@ -149,6 +149,6 @@
 <details class="technic"><summary>原始 JSON</summary><p class="detail" id="diag-json">—</p></details>
 </section>
 
-<footer>Lightbar · ESP32-C6 · Matter over Wi-Fi<br>开源项目 · 固件未签名，仅建议在可信局域网使用</footer>
+<footer>LightBar · ESP32-C6 · Matter over Wi-Fi<br>开源项目 · 固件未签名，仅建议在可信局域网使用</footer>
 </main>
 </body></html>

@@ -1,4 +1,4 @@
-/* Lightbar device console.
+/* LightBar device console.
  *
  * One page, four tabs: overview (state + light control), update (OTA), wifi
  * (provisioning + Matter code), advanced (runtime parameters, driver registers,
@@ -426,7 +426,7 @@
       lastProv = j;
       $('ap-ssid').textContent = j.ap_active ? j.ap_ssid : (j.ip || '已联网');
       $('ap-state').textContent = j.ap_active ? '热点开启' : (j.ip ? '已联网' : '空闲');
-      $('ap-hint').textContent = j.ap_active ? '无密码，连上后回到本页' : (j.ip ? 'IP ' + j.ip : '');
+      $('ap-hint').textContent = '热点密码 ' + (j.ap_pass || '设备 MAC 大写、无冒号') + (j.ap_active ? '，连上后回到本页' : (j.ip ? ' · IP ' + j.ip : ''));
       if (j.manual_code) { $('manual-code').textContent = j.manual_code; }
       $('code-note').textContent = j.commissioned ? '设备已加入 Matter fabric。'
         : '当前未加入任何 fabric，配对码输入后即可添加。';
@@ -452,7 +452,7 @@
       $('join-note').textContent = '已提交，等待设备连接…';
       pollProv();
     }).catch(function (e) {
-      $('join-note').textContent = '设备没有响应（' + e.name + '）。如果手机掉线了，重新连回 Lightbar-0609 再打开本页。';
+      $('join-note').textContent = '设备没有响应（' + e.name + '）。如果手机掉线了，重新连回设备热点（名字以 LightBar-ES- 开头，密码为设备 12 位大写 MAC）再打开本页。';
       elJoin.disabled = false;
       $('join-manual').disabled = false;
     });
@@ -564,7 +564,6 @@
     for (var i = 0; i < sel.options.length; i++) { if (+sel.options[i].value === code) has = true; }
     if (!has) { var o = document.createElement('option'); o.value = code; o.textContent = (160.08 * code * 16 / 4095).toFixed(0) + ' mA(自定义)'; sel.appendChild(o); }
     sel.value = String(code);
-    $('cur-val').textContent = (160.08 * code * 16 / 4095).toFixed(1) + ' mA/串';
   }
   $('cur-sel').addEventListener('change', function () {
     $('cur-state').textContent = '下发中...';
@@ -667,7 +666,7 @@
     fetchT('api/factory_reset', { method: 'POST', headers: headers, body: 'confirm=yes' }, 8000)
       .then(function (r) {
         if (!r.ok) throw new Error('HTTP ' + r.status);
-        $('factory-note').textContent = '设备正在清除配置并重启。约 15 秒后请在手机 Wi-Fi 列表里连接 Lightbar-xxxx 热点,再打开 http://192.168.4.1/ 重新配网。';
+        $('factory-note').textContent = '设备正在清除配置并重启。约 15 秒后请在手机 Wi-Fi 列表里连接 LightBar-ES-xxxx 热点（密码 = 设备 MAC 的 12 位大写十六进制、无冒号，也可看串口日志）,再打开 http://192.168.4.1/ 重新配网。';
       }).catch(function (e) {
         $('factory-note').textContent = '失败:' + e.message;
         btn.disabled = false;

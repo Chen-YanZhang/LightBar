@@ -1,4 +1,4 @@
-// Lightbar board pin map — NEW PCB revision
+// LightBar board pin map — NEW PCB revision
 // Old PCB3_3 note: EN/PWM were hardwired, INT/PG not wired — those pins only
 // exist on the new revision. Keep this file as the single source of truth.
 #pragma once
